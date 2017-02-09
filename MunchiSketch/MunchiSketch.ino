@@ -6,7 +6,7 @@
 #define DELAY 500
 
 #define THERMISTORVALUE 100000
-#define SERIESRESISTOR 47000
+#define SERIESRESISTOR 100000
 #define BCOEFFICIENT 4072
 
 double temperature = 0.0;
@@ -20,17 +20,14 @@ void setup()
 
 void loop()
 {
-  // if (digitalRead(SWITCH)==HIGH)
-  // {
-  //   digitalWrite(RELAY, LOW); // LOW means on
-  // }
-  // else
-  // {
-  //   digitalWrite(RELAY, HIGH); // HIGH means off
-  // }
- 
-  //temperature = read_temp();
-  //Serial.println(temperature);
+  if (digitalRead(SWITCH)==HIGH)
+  {
+    digitalWrite(RELAY, LOW); // LOW means on
+  }
+  else
+  {
+    digitalWrite(RELAY, HIGH); // HIGH means off
+  }
   
   double reading = analogRead(THERM);
   Serial.print("Analog Reading: ");
