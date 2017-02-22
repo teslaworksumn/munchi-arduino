@@ -39,6 +39,7 @@ void loop()
   Serial.println(reading);
 
   read_temp(reading);
+  lookup(reading);      //new lookup table
   delay(DELAY);
 }
 
@@ -59,4 +60,34 @@ void read_temp(double resistance)
 }
 
 
+void lookup(double resistance)  
+{
+  //rvals holds resistances "in"
+  double rvals[] = {0.016427,0.018429,0.020727,0.023373,0.02643,0.02997,0.034084,0.03888,0.044489,0.051071,0.058824,0.067988,0.078862,0.091816,0.10731,0.12592,0.14837,0.17558,0.20872,0.24925,0.29911,0.36074,0.43735,0.53312,0.65355,0.80594,1,1.2488,1.5699,1.9876,2.5348};
+  //tvals holds corresponding temperatures "out"
+  int tvals[] = {155,150,145,140,135,130,125,120,115,110,105,100,95,90,85,80,75,70,65,60,55,50,45,40,35,30,25,20,15,10,5};
+  //double resistance = .36;    //if want to test program
+  int temp;
+  temp=multiMap(resistance,rvals,tvals,31);
+  Serial.print("Temperature ");
+  Serial.print(temp);
+  Serial.println(" *C");
+}
 
+int multiMap(double val, double* _in, int* _out, uint8_t size)
+{
+  // take care the value is within range
+  // val = constrain(val, _in[0], _in[size-1]);
+  if (val <= _in[0]) return _out[0];
+  if (val >= _in[size-1]) return _out[size-1];
+
+  // search right interval
+  uint8_t pos = 1;  // _in[0] allready tested
+  while(val > _in[pos]) pos++;
+
+  // this will handle all exact "points" in the _in array
+  if (val == _in[pos]) return _out[pos];
+
+  // interpolate in the right segment for the rest
+  return (val - _in[pos-1]) * (_out[pos] - _out[pos-1]) / (_in[pos] - _in[pos-1]) + _out[pos-1];
+}
