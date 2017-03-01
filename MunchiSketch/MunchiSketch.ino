@@ -13,6 +13,7 @@ double temperature = 0.0;
 
 void setup()
 {
+  analogReference(EXTERNAL);
   pinMode(RELAY, OUTPUT);
   pinMode(SWITCH, INPUT);
   Serial.begin(9600);
@@ -28,35 +29,27 @@ void loop()
   {
     digitalWrite(RELAY, HIGH); // HIGH means off
   }
+
+   char command = Serial.read();
+   if(command == '1')
+   {
+    digitalWrite(RELAY, LOW);
+   } else if(command == '0')
+   {
+    digitalWrite(RELAY, HIGH);
+   }
   
   double reading = analogRead(THERM);
   Serial.print("Analog Reading: ");
   Serial.println(reading);
 
-  reading = (1023 / reading) - 1;
-  reading = SERIESRESISTOR / reading;
+  reading = reading / (1023 - reading);
+  //reading = SERIESRESISTOR / reading;
   Serial.print("Thermistor Resistance: ");
   Serial.println(reading);
 
-  read_temp(reading);
   lookup(reading);      //new lookup table
   delay(DELAY);
-}
-
-void read_temp(double resistance)
-{
-  double temp = resistance / THERMISTORVALUE;
-  temp = log(temp);
-  temp /= BCOEFFICIENT;
-  temp += 1.0 / (THERMISTORVALUE + 273.15);
-  temp = 1.0 / temp;
-  temp -= 273.15;
-
-  Serial.print("Temperature ");
-  Serial.print(temp);
-  Serial.println(" *C");
-  
-  temperature = temp;
 }
 
 
