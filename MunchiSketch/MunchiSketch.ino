@@ -21,23 +21,26 @@ void setup()
 
 void loop()
 {
-  if (digitalRead(SWITCH)==HIGH)
-  {
-    digitalWrite(RELAY, LOW); // LOW means on
-  }
-  else
-  {
-    digitalWrite(RELAY, HIGH); // HIGH means off
-  }
+//  if (digitalRead(SWITCH)==HIGH)
+//  {
+//    digitalWrite(RELAY, LOW); // LOW means on
+//  }
+//  else
+//  {
+//    digitalWrite(RELAY, HIGH); // HIGH means off
+//  }
 
-   char command = Serial.read();
-   if(command == '1')
-   {
-    digitalWrite(RELAY, LOW);
-   } else if(command == '0')
-   {
-    digitalWrite(RELAY, HIGH);
-   }
+    if(Serial.available() > 0)
+    {
+     char command = Serial.read();
+     if(command == 'Y')
+     {
+      digitalWrite(RELAY, LOW);
+     } else if(command == 'N')
+     {
+      digitalWrite(RELAY, HIGH);
+     }
+    }
   
   double reading = analogRead(THERM);
   Serial.print("Analog Reading: ");
